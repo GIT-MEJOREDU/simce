@@ -82,7 +82,7 @@ DATABASES = {
         },
         'NAME': 'sire',
         'USER': 'postgres',
-        'PASSWORD': '911&In33%db',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': 5432
     },
@@ -93,7 +93,7 @@ DATABASES = {
         },
         'NAME': 'sire',
         'USER': 'postgres',
-        'PASSWORD': '911&In33%db',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': 5432
     },
@@ -104,7 +104,7 @@ DATABASES = {
         },
         'NAME': 'sire',
         'USER': 'postgres',
-        'PASSWORD': '911&In33%db',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': 5432
     }
