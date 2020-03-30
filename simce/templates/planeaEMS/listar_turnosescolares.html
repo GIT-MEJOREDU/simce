@@ -1,0 +1,72 @@
+{% extends 'index.html' %}
+
+{% block titulo %}
+    Listado de Turnos
+{% endblock titulo %}
+{% block body %}
+    {% if turnosescolares %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre Turno</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for turno in turnosescolares %}
+                    <tr>
+                        <td>{{ turno.ipkturnoescolar }}</td>
+                        <td>{{ turno.cnombreturnoescolar }}</td>
+                    </tr>
+                {% endfor %}
+                <tr></tr>
+            </tbody>
+        </table>
+    {% else %}
+        <h2>No existen turnos registrados </h2>
+    {% endif %}
+<br>
+    {% if ciclosescolares %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre Ciclos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ciclo in ciclosescolares %}
+                    <tr>
+                        <td>{{ ciclo.ipkcicloescolar }}</td>
+                        <td>{{ ciclo.ccicloescolar }}</td>
+                    </tr>
+                {% endfor %}
+                <tr></tr>
+            </tbody>
+        </table>
+    {% else %}
+        <h2>No existen turnos registrados </h2>
+    {% endif %}
+<br>
+    {% if extensionesems %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre Extensión</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ext in extensionesems %}
+                    <tr>
+                        <td>{{ ext.ipkextensionems }}</td>
+                        <td>{{ ext.cnombreextensionems }}</td>
+                    </tr>
+                {% endfor %}
+                <tr></tr>
+            </tbody>
+        </table>
+    {% else %}
+        <h2>No existen extensiones EMS registradas </h2>
+    {% endif %}
+{% endblock body %}
