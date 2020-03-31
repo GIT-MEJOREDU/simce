@@ -8,6 +8,12 @@ def Home(request):
 
 def listarTurnosEscolares(request):
         turnosescolares = Turnosescolares.objects.using('dimensionesPlaneaEms').all()
+        return render(request, 'planeaEMS/listar_turnosescolares.html',{'turnosescolares':turnosescolares})
+
+def listarCiclosEscolares(request):
         ciclosescolares = Ciclosescolares.objects.using('dimensionesPlaneaEms').all()
+        return render(request, 'planeaEMS/listar_ciclosescolares.html',{'ciclosescolares':ciclosescolares})
+
+def listarExtensionesEms(request):
         extensionesems = Extensionesems.objects.using('dimensionesPlaneaEms').all()
-        return render(request, 'planeaEMS/listar_turnosescolares.html',{'turnosescolares':turnosescolares,'ciclosescolares':ciclosescolares,'extensionesems':extensionesems})
+        return render(request, 'planeaEMS/listar_extensionesems.html',{'extensionesems':extensionesems})

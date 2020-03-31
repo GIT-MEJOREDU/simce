@@ -1,28 +1,28 @@
 {% extends 'index.html' %}
 
 {% block titulo %}
-    Listado de Turnos
+    Listado de Ciclos Escolares
 {% endblock titulo %}
 {% block body %}
-    {% if turnosescolares %}
+    {% if ciclosescolares %}
         <table>
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Turnos Escolares</th>
+                    <th>Ciclos Escolares</th>
                 </tr>
             </thead>
             <tbody>
-                {% for turno in turnosescolares %}
+                {% for ciclo in ciclosescolares %}
                     <tr>
-                        <td>{{ turno.ipkturnoescolar }}</td>
-                        <td>{{ turno.cnombreturnoescolar }}</td>
+                        <td>{{ ciclo.ipkcicloescolar }}</td>
+                        <td>{{ ciclo.ccicloescolar }}</td>
                     </tr>
                 {% endfor %}
                 <tr></tr>
             </tbody>
         </table>
     {% else %}
-        <h2>No existen turnos registrados </h2>
+        <h2>No existen ciclos registrados </h2>
     {% endif %}
 {% endblock body %}

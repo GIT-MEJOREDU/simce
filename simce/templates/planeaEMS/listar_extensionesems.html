@@ -1,28 +1,28 @@
 {% extends 'index.html' %}
 
 {% block titulo %}
-    Listado de Turnos
+    Listado de Extensiónes EMS
 {% endblock titulo %}
 {% block body %}
-    {% if turnosescolares %}
+    {% if extensionesems %}
         <table>
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Turnos Escolares</th>
+                    <th>Extensiones EMS</th>
                 </tr>
             </thead>
             <tbody>
-                {% for turno in turnosescolares %}
+                {% for ext in extensionesems %}
                     <tr>
-                        <td>{{ turno.ipkturnoescolar }}</td>
-                        <td>{{ turno.cnombreturnoescolar }}</td>
+                        <td>{{ ext.ipkextensionems }}</td>
+                        <td>{{ ext.cnombreextensionems }}</td>
                     </tr>
                 {% endfor %}
                 <tr></tr>
             </tbody>
         </table>
     {% else %}
-        <h2>No existen turnos registrados </h2>
+        <h2>No existen extensiones EMS registradas </h2>
     {% endif %}
 {% endblock body %}
