@@ -1,4 +1,5 @@
-from django.db import models
+#from django.db import models
+from django.contrib.gis.db import models
 
 # Create your models here.
 class Turnosescolares(models.Model):
@@ -24,4 +25,18 @@ class Extensionesems(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'extensionesEms'
+        db_table = 'extensionesEms'# This is an auto-generated Django model module.
+
+class Centrostrabajo(models.Model):
+    ipkcentrotrabajo = models.IntegerField(db_column='iPkCentroTrabajo', primary_key=True)  # Field name made lowercase.
+    cclavecentrotrabajo = models.CharField(db_column='cClaveCentroTrabajo', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    cnombrecentrotrabajo = models.CharField(db_column='cNombreCentroTrabajo', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    iindescuelaconpuntajematlyc = models.IntegerField(db_column='iIndEscuelaConPuntajeMatLyC', blank=True, null=True)  # Field name made lowercase.
+    dlatitud = models.DecimalField(db_column='dLatitud', max_digits=65535, decimal_places=65535, blank=True, null=True)  # Field name made lowercase.
+    dlongitud = models.DecimalField(db_column='dLongitud', max_digits=65535, decimal_places=65535, blank=True, null=True)  # Field name made lowercase.
+    the_geom = models.GeometryField(blank=True, null=True)  # This field type is a guess.
+    cescuelaparecida = models.CharField(db_column='cEscuelaParecida', max_length=255, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'centrosTrabajo'

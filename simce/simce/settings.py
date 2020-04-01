@@ -87,7 +87,9 @@ DATABASES = {
         'PORT': 5432
     },
     'dimensionesPlaneaEms': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'OPTIONS': {
                 'options': '-c search_path="dimensionesPlaneaEms",public'
         },

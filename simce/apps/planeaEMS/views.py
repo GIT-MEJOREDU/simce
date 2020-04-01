@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # Imports
-from .models import Turnosescolares,Ciclosescolares,Extensionesems
+from .models import Turnosescolares,Ciclosescolares,Extensionesems, Centrostrabajo
 
 # Create your views here.
 def Home(request):
@@ -17,3 +17,8 @@ def listarCiclosEscolares(request):
 def listarExtensionesEms(request):
         extensionesems = Extensionesems.objects.using('dimensionesPlaneaEms').all()
         return render(request, 'planeaEMS/listar_extensionesems.html',{'extensionesems':extensionesems})
+
+def listarCentrosTrabajo(request):
+        centrostrabajo = Centrostrabajo.objects.using('dimensionesPlaneaEms').all()
+        ciclosescolares = Ciclosescolares.objects.using('dimensionesPlaneaEms').all()
+        return render(request, 'planeaEMS/listar_centrostrabajo.html',{'ciclosescolares':ciclosescolares,'centrostrabajo':centrostrabajo})

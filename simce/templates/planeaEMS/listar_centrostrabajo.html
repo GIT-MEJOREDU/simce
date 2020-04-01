@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+
+{% block titulo %}
+    Listado de Ciclos Escolares
+{% endblock titulo %}
+{% block body %}
+    {% if centrostrabajo %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Clave Centro de Trabajo</th>
+                    <th>Dato Geométrico</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for centro in centrostrabajo %}
+                    <tr>
+                        <td>{{ centro.ipkcentrotrabajo }}</td>
+                        <td>{{ centro.cclavecentrotrabajo }}</td>
+                        <td>{{ centro.the_geom }}</td>
+                    </tr>
+                {% endfor %}
+                <tr></tr>
+            </tbody>
+        </table>
+    {% else %}
+        <h2>No existen Centros de Trabajo registrados </h2>
+    {% endif %}
+{% endblock body %}
