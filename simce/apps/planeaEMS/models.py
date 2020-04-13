@@ -2,6 +2,25 @@
 from django.contrib.gis.db import models
 
 # Create your models here.
+class Reporter(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField()
+
+    def __str__(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
+class Article(models.Model):
+    headline = models.CharField(max_length=100)
+    pub_date = models.DateField()
+    reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.headline
+
+    class Meta:
+        ordering = ['headline']
+
 class Turnosescolares(models.Model):
     ipkturnoescolar = models.IntegerField(db_column='iPkTurnoEscolar', primary_key=True)  # Field name made lowercase.
     cnombreturnoescolar = models.CharField(db_column='cNombreTurnoEscolar', max_length=60, blank=True, null=True)  # Field name made lowercase.
@@ -46,6 +65,7 @@ class Centrostrabajo(models.Model):
 
 class Hechosreporteemsinee(models.Model):
     ifkcentrotrabajo = models.IntegerField(db_column='iFkCentroTrabajo', blank=True, null=True)  # Field name made lowercase.
+    #ipkcentrotrabajo = models.ForeignKey('Centrostrabajo', on_delete=models.CASCADE)
     ifkcicloescolar = models.IntegerField(db_column='iFkCicloEscolar', blank=True, null=True)  # Field name made lowercase.
     ifkturnoescolar = models.IntegerField(db_column='iFkTurnoEscolar', blank=True, null=True)  # Field name made lowercase.
     ifknivelescolar = models.IntegerField(db_column='iFkNivelEscolar', blank=True, null=True)  # Field name made lowercase.
@@ -139,8 +159,7 @@ class Hechosreporteemsinee(models.Model):
     ifkescuelapromedio = models.IntegerField(db_column='iFkEscuelaPromedio', blank=True, null=True)  # Field name made lowercase.
     dpuntajepromedioestatallyc = models.FloatField(db_column='dPuntajePromedioEstatalLyC', blank=True, null=True)  # Field name made lowercase.
     dpuntajepromedioestatalmat = models.FloatField(db_column='dPuntajePromedioEstatalMat', blank=True, null=True)  # Field name made lowercase.
-    ifkcuadranteescuela = models.IntegerField(db_column='iFkCuadranteEscuela', blank=True, null=True)  # Field name made lowercase.
-    id = models.IntegerField(db_column='id', primary_key=True) 
+    ifkcuadranteescuela = models.IntegerField(db_column='iFkCuadranteEscuela', blank=True, null=True)  # Field name made lowercase.) 
 
     class Meta:
         managed = False

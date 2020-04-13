@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block extralink %}
+    {% endblock extralink %}
     <title>{% block titulo %}Django - SIMCE{% endblock titulo %}</title>
     {% block extracss %}
     {% endblock extracss %}
+    <script src="../apps/planeaEMS/static/js/d3.v5.min.js"></script>
+    {% block extrascript %}
+    {% endblock extrascript %}
 </head>
 <body>
     {% block body %}
