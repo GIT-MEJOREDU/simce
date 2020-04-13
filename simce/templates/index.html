@@ -9,17 +9,17 @@
     <title>{% block titulo %}Django - SIMCE{% endblock titulo %}</title>
     {% block extracss %}
     {% endblock extracss %}
-    <script src="../apps/planeaEMS/static/js/d3.v5.min.js"></script>
-    {% block extrascript %}
-    {% endblock extrascript %}
+    <!--script src="https://d3js.org/d3.v5.min.js"></script-->
+    {% load static %}
+    <script src='{% static "js/d3.v5.min.js" %}'></script>
 </head>
 <body>
     {% block body %}
     <h1>Pagina de inicio del proyecto</h1>
     {% endblock body %}
-
-
     {% block extrajs %}
     {% endblock extrajs %}
+    {% block extrascript %}
+    {% endblock extrascript %}
 </body>
 </html>
