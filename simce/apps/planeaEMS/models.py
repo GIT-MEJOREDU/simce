@@ -165,3 +165,14 @@ class Hechosreporteemsinee(models.Model):
         managed = False
         db_table = 'hechosReporteEmsInee'
         db_tablespace = 'hechos'
+
+class EntidadesFederativas(models.Model):
+    ipkentidad_federativa = models.IntegerField(db_column='iPkEntidadFederativa', primary_key=True)  # Field name made lowercase.
+    clave_entidad = models.CharField(db_column='cClaveEntidad', max_length=256, blank=True, null=True)  # Field name made lowercase.
+    clave_nombre_entidad = models.CharField(db_column='cNombreEntidad', max_length=256, blank=True, null=True)  # Field name made lowercase.
+
+
+    class Meta:
+        managed = False
+        db_table = 'entidadesFederativas'
+        db_tablespace = 'dimensionesPlaneaEms'

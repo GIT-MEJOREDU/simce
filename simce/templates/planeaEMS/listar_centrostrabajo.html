@@ -1,8 +1,13 @@
 {% extends 'index.html' %}
 
 {% block titulo %}
-    Listado de Ciclos Escolares
-{% endblock titulo %}
+    Listado de Centros de Trabajo
+{% endblock %}
+
+{% block head_content %}
+    <h1 class="text-center">Listado de centros de trabajo</h1>
+{% endblock %}
+
 {% block body %}
     {% if centrostrabajo %}
         <table>
@@ -27,4 +32,4 @@
     {% else %}
         <h2>No existen Centros de Trabajo registrados </h2>
     {% endif %}
-{% endblock body %}
+{% endblock %}

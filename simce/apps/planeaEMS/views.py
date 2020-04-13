@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # Imports
-from .models import Turnosescolares,Ciclosescolares,Extensionesems, Centrostrabajo
+from .models import Turnosescolares,Ciclosescolares,Extensionesems, Centrostrabajo, EntidadesFederativas
 
 # Create your views here.
 def datos_escuela(request, cct = '01DCT0279R', turno_escolar = 1, ciclo_escolar = 19,extension_ems = 0):
@@ -64,5 +64,16 @@ def listarExtensionesEms(request):
         return render(request, 'planeaEMS/listar_extensionesems.html',{'extensionesems':extensionesems})
 
 def listarCentrosTrabajo(request):
+<<<<<<< HEAD
         centrostrabajo = Centrostrabajo.objects.using('dimensionesPlaneaEms').all().iterator()
         return render(request, 'planeaEMS/listar_centrostrabajo.html',{'centrostrabajo':centrostrabajo})
+=======
+        centrostrabajo = Centrostrabajo.objects.using('dimensionesPlaneaEms').all()
+        ciclosescolares = Ciclosescolares.objects.using('dimensionesPlaneaEms').all()
+        return render(request, 'planeaEMS/listar_centrostrabajo.html',{'ciclosescolares':ciclosescolares,'centrostrabajo':centrostrabajo})
+
+
+def listarEntidades(request):
+        entidadesfederativas = EntidadesFederativas.objects.using('dimensionesPlaneaEms').all().iterator()
+        return render(request, 'planeaEMS/entidades.html',{'entidadesfederativas': entidadesfederativas})
+>>>>>>> isag

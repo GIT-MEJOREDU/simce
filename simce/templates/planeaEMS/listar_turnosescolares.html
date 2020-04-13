@@ -2,7 +2,12 @@
 
 {% block titulo %}
     Listado de Turnos
-{% endblock titulo %}
+{% endblock %}
+
+{% block head_content %}
+<h1 class="text-center">Listado de turnos escolares</h1>
+{% endblock %}
+
 {% block body %}
     {% if turnosescolares %}
         <table>
@@ -25,4 +30,4 @@
     {% else %}
         <h2>No existen turnos registrados </h2>
     {% endif %}
-{% endblock body %}
+{% endblock %}
