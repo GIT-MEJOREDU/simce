@@ -64,16 +64,12 @@ def listarExtensionesEms(request):
         return render(request, 'planeaEMS/listar_extensionesems.html',{'extensionesems':extensionesems})
 
 def listarCentrosTrabajo(request):
-<<<<<<< HEAD
         centrostrabajo = Centrostrabajo.objects.using('dimensionesPlaneaEms').all().iterator()
-        return render(request, 'planeaEMS/listar_centrostrabajo.html',{'centrostrabajo':centrostrabajo})
-=======
-        centrostrabajo = Centrostrabajo.objects.using('dimensionesPlaneaEms').all()
-        ciclosescolares = Ciclosescolares.objects.using('dimensionesPlaneaEms').all()
+        ciclosescolares = Ciclosescolares.objects.using('dimensionesPlaneaEms').all().iterator()
         return render(request, 'planeaEMS/listar_centrostrabajo.html',{'ciclosescolares':ciclosescolares,'centrostrabajo':centrostrabajo})
 
 
 def listarEntidades(request):
         entidadesfederativas = EntidadesFederativas.objects.using('dimensionesPlaneaEms').all().iterator()
         return render(request, 'planeaEMS/entidades.html',{'entidadesfederativas': entidadesfederativas})
->>>>>>> isag
+
