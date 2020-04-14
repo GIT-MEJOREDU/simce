@@ -20,5 +20,5 @@ from apps.planeaEMS.views import Home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('planeaEMS/', include(('apps.planeaEMS.urls','planeaEMS'))),
-    path('home/', Home, name = 'index')
+    path('home/', Home, name = 'index'),
 ]
