@@ -1,0 +1,386 @@
+{% extends 'index.html' %}
+{% block extralink %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% endblock extralink %}
+{% block titulo %}
+Nivel de Logro
+{% endblock titulo %}
+{% block extrascript %}
+<style>
+    body {
+        margin: auto;
+        width: 650px;
+        font: 12px arial;
+    }
+
+    .bar {
+        fill: steelblue;
+    }
+
+    .axis path {
+        display: none;
+    }
+</style>
+</style>
+{% endblock extrascript %}
+{% block body %}
+<table width="100" class="table table-striped table-bordered table-hover" id="dataTables-example">
+    <thead>
+        <tr>
+            <td>Datos de Escuela</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in consulta %}
+        <tr>
+            {% for i in item %}
+            <td>
+                {{ i }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<table width="100" class="table table-striped table-bordered table-hover" id="dataTables-example">
+    <thead>
+        <tr>
+            <td>Nivel de Logro</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in consulta_logro %}
+        <tr>
+            {% for i in item %}
+            <td>
+                {{ i }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+
+<!-- Bootstrap grid setup -->
+<div class="container">
+    <div class="row">
+        <!--svg id="chart-area" width="800" height="400"></svg-->
+        <svg id="chart-area" width="660" height="500"></svg>
+    </div>
+</div>
+
+<script>
+    //El objeto Django se obtiene como cadena, conformato JSON
+    var myDjangoList = "{{ consulta_logro | safe }}";
+    //console.log("MyDjangoList: ")
+    //console.log(myDjangoList);
+
+    //Se sustituyen comillas simples por comillas dobles
+    var varJson = JSON.parse(myDjangoList.replace(/\'/g, "\""));
+
+    //console.log("jarJson:");
+    //console.log(varJson);
+
+    //expresion regular para sustituir las cadenas Decimal, (, ),' 
+    //de la cadena myDjangoList que se obtiene desde Django
+    /*var re = /Decimal\(|\)|\[|\]| |\'/g;
+    myDjangoList = myDjangoList.replace(re, '');
+    console.log("Limpiar caracteres");
+    console.log(myDjangoList);*/
+    //Se convierte en arreglo
+    /*var arreglo = myDjangoList.split(",");
+    console.log("arreglo: ");
+    console.log(arreglo);*/
+
+    //Se convierte en arreglo de mapa
+    /*
+    var ids = ["Area de Dominio", "Nivel IV Dominio sobresaliente", "Nivel III Dominio satisfactorio", "Nivel II Dominio básico", "Nivel I Dominio insuficiente"];
+    var i = 0;
+    var mapa = arreglo.map(function (current, index) {
+        if (index % 5 == 0) { i = 0 }
+
+        console.log("dentro del map: " + index % 5);
+        console.log(ids[i] + ':' + current);
+        return ids[i++] + ':' + current;
+        //return ids[i++] + current;
+        //console.log("mapa****");
+        //console.log(current);
+    })
+
+    console.log("mapa: ");
+    console.log(mapa);
+
+	var desc = ["Nivel I Dominio insuficiente","Nivel II Dominio básico","Nivel III Dominio satisfactorio","Nivel IV Dominio sobresaliente"];
+    var elemento1;
+    resultado = /LyC|Mat/g;
+    var resultado = arreglo.map(function (elemento) {
+        var cantidad;
+        if (elemento.match(re)) {
+            elemento1 = elemento;
+        } else {
+            cantidad = { ciclo: elemento1, valor: elemento };
+            return cantidad;
+        }
+    });
+    //se elimina el primer elemento del arreglo
+    resultado.shift();
+    //se elimina el quinto elemento del arreglo
+    resultado.splice(4, 1);
+    //resultado.unshift({ciclo: "LyC", valor: 20});
+    //resultado.push({ciclo: "Mat", valor: 20});
+    console.log("Datos listos: ");
+    console.log(resultado);
+     */
+    //A partir de este punto ya se puede utilizar para desplegar los datos en una gráfica
+
+    //los valores Decimal se convierten de cadena adecimal
+    varJson.forEach(function (d) {
+        d.Nivel_I_Dominio_insuficiente = +d.Nivel_I_Dominio_insuficiente;
+        d.Nivel_II_Dominio_básico = +d.Nivel_II_Dominio_básico;
+        d.Nivel_III_Dominio_satisfactorio = +d.Nivel_III_Dominio_satisfactorio;
+        d.Nivel_IV_Dominio_sobresaliente = +d.Nivel_IV_Dominio_sobresaliente;
+    });
+    console.log("varJson");
+    console.log(varJson);
+    var chart_data = varJson;
+
+    var svg = d3.select("#chart-area"),
+        margin = { top: 10, right: 10, bottom: 100, left: 100 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .padding(0.1)
+        .align(0.1);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    var z = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
+    //.range(["red", "orange", "yellow", "green"]);
+
+    console.log("x: " + x);
+    console.log("y: " + y);
+
+    var stack = d3.stack();
+
+    chart_area(chart_data);
+
+    function chart_area(data) {
+        //var lastReg = new Object();
+        //lastReg.columns = ["Area_de_Dominio","Nivel_I_Dominio_insuficiente","Nivel_II_Dominio_básico","Nivel_III_Dominio_satisfactorio","Nivel_IV_Dominio_sobresaliente"];
+        //var columns = ["Area_de_Dominio","Nivel_I_Dominio_insuficiente","Nivel_II_Dominio_básico","Nivel_III_Dominio_satisfactorio","Nivel_IV_Dominio_sobresaliente"];
+
+        data.push(["Area_de_Dominio", "Nivel_I_Dominio_insuficiente", "Nivel_II_Dominio_básico", "Nivel_III_Dominio_satisfactorio", "Nivel_IV_Dominio_sobresaliente"]);
+        /*
+        var data_v2 = d3.nest()
+            //.key(function(d) { return d.Area_de_Dominio; })
+           .entries(data);
+        console.log("version 2");
+        console.log(data_v2);
+        */
+
+
+
+        var i;
+        type(data, i, data[2].slice(0));
+        console.log("data origen logro: ");
+        console.log(data);
+        data.sort(function (a, b) { return b.total - a.total; });
+        x.domain(data.map(function (d) { return d.Area_de_Dominio; }));
+        y.domain([0, 100]);
+        z.domain(data[2].slice(1));
+
+        stack.keys(data[2].slice(1));
+        console.log("slice(1): " + data[2].slice(1));
+
+        g.selectAll(".serie")
+            .data(stack(data))
+            .enter().append("g")
+            .attr("class", "serie")
+            .attr("fill", function (d) { return z(d.key); })
+            .selectAll("rect")
+            .data(function (d) { return d; })
+            .enter().append("rect")
+            .attr("x", function (d) { return x(d.data.Area_de_Dominio); })
+            .attr("y", function (d) { return y(d[1]); })
+            .attr("height", function (d) {  return y(d[0]) - y(d[1]); })
+            .attr("width", x.bandwidth());
+
+        g.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        g.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.axisLeft(y).ticks(10, "s"))
+            .append("text")
+            .attr("x", -50)
+            .attr("y", y(y.ticks(10).pop()))
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "start")
+            .attr("fill", "#000")
+            .text("Total");
+
+        var legend = g.selectAll(".legend")
+            .data(data[2].slice(1).reverse())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
+            .style("font", "10px sans-serif");
+
+        legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("fill", z);
+
+        legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .text(function (d) { return d; });
+    };
+
+    function type(d, i, columns) {
+        var t;
+        //console.log("length: " + columns.length);
+
+        d.map(function (d) {
+            for (i = 1, t = 0; i < columns.length; ++i) {
+                t += d[columns[i]] = +d[columns[i]];
+                //console.log("d.total: " + t);
+                d.total = t;
+            }
+            return d.ciclo;
+        });
+        //console.log(d);
+        return d;
+    }
+    //********************************
+
+
+</script>
+
+
+<svg id="chart" width="960" height="500"></svg>
+
+<script>
+
+    var svg = d3.select("#chart"),
+        margin = { top: 20, right: 20, bottom: 30, left: 40 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .padding(0.1)
+        .align(0.1);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    var z = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    //console.log("x: " + x);
+    //console.log("y: " + y);
+
+    var stack = d3.stack();
+
+    {% load static %}
+    d3.csv('{% static "datos/data2.csv" %}').then(d => chart(d))
+    //d3.csv('{% static "datos/data2.csv" %}', type, function(error, data) {
+
+    function chart(data) {
+        console.log("data origen: ")
+        console.log(data);
+        var i;
+        type(data, i, data.columns.slice(0));
+        //console.log("data origen: ")
+        //console.log(data);
+        data.sort(function (a, b) { return b.total - a.total; });
+        x.domain(data.map(function (d) { return d.State; }));
+        y.domain([0, d3.max(data, function (d) { return d.total; })]).nice();
+        z.domain(data.columns.slice(1));
+
+        stack.keys(data.columns.slice(1));
+        //console.log("slice(1): " + data.columns.slice(1));
+
+        g.selectAll(".serie")
+            .data(stack(data))
+            .enter().append("g")
+            .attr("class", "serie")
+            .attr("fill", function (d) { return z(d.key); })
+            .selectAll("rect")
+            .data(function (d) { return d; })
+            .enter().append("rect")
+            .attr("x", function (d) { return x(d.data.State); })
+            .attr("y", function (d) { return y(d[1]); })
+            .attr("height", function (d) { return y(d[0]) - y(d[1]); })
+            .attr("width", x.bandwidth());
+
+        g.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        g.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.axisLeft(y).ticks(10, "s"))
+            .append("text")
+            .attr("x", 2)
+            .attr("y", y(y.ticks(10).pop()))
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "start")
+            .attr("fill", "#000")
+            .text("Population");
+
+        var legend = g.selectAll(".legend")
+            .data(data.columns.slice(1).reverse())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
+            .style("font", "10px sans-serif");
+
+        legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("fill", z);
+
+        legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .text(function (d) { return d; });
+    };
+
+    function type(d, i, columns) {
+        var t;
+        //console.log("length: " + columns.length);
+
+        d.map(function (d) {
+            for (i = 1, t = 0; i < columns.length; ++i) {
+                t += d[columns[i]] = +d[columns[i]];
+                //console.log("d.total: " + t);
+                d.total = t;
+            }
+            return d.ciclo;
+        });
+        //console.log(d);
+        return d;
+    }
+
+</script>
+
+{% endblock body %}

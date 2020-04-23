@@ -9,7 +9,7 @@
 <style>
     body {
         margin: auto;
-        width: 750px;
+        width: 650px;
         font: 12px arial;
     }
 </style>
@@ -53,6 +53,128 @@
 </table>
 <br>
 
+<!-- Bootstrap grid setup -->
+<div class="container">
+	<div class="row">
+		<div id="chart-area"></div>
+	</div>
+</div>
+
+{% load static %}
+<script src='{% static "js/main.js" %}'></script>
+
+<script>
+	//convierte el objeto Django en cadena JS
+	var myDjangoList = ("{{consulta_lyc | safe}}");
+	console.log(myDjangoList);
+	//expresion regular para sustituir las cadenas Decimal, (, ), [, ],' 
+	//de la cadena myDjangoList que se obtiene desde Django
+	var re = /Decimal\(|\)|\[|\]| |\'/g; 
+	myDjangoList = myDjangoList.replace(re, '');
+	console.log(myDjangoList);
+	//Se convierte en arreglo
+	var arreglo = myDjangoList.split(",");
+	console.log(arreglo);
+	//Se convierte en arreglo de diccionarios
+
+//	var desc = ["Nivel I Dominio insuficiente","Nivel II Dominio básico","Nivel III Dominio satisfactorio","Nivel IV Dominio sobresaliente"];
+	var elemento1;
+	re = /LyC|Mat/g;
+	var resultado = arreglo.map(function(elemento){
+		var cantidad;
+		if(elemento.match(re)){
+			elemento1 = elemento;
+		}else{
+			cantidad = {ciclo:elemento1, valor: elemento};
+			return cantidad;
+		}
+	});
+	//se elimina el primer elemento del arreglo
+	resultado.shift();
+	//se elimina el quinto elemento del arreglo
+	resultado.splice(4,1);
+	//resultado.unshift({ciclo: "LyC", valor: 20});
+	//resultado.push({ciclo: "Mat", valor: 20});
+	
+	console.log(resultado);
+//A partir de este punto ya se puede utilizar para desplegar los datos en una gráfica
+
+	resultado.forEach(function(d){
+		d.valor = +d.valor;
+	});
+	console.log(resultado);
+	var data = resultado;
+
+	//se definen margenes
+	var margin = { left:100, right:10, top:10, bottom:100 };
+	//se definen dimensones del canvas svg
+	var width = 600 - margin.left - margin.right,
+    	height = 400 - margin.top - margin.bottom;
+
+	var g = d3.select("#chart-area")
+    	.append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    	.append("g")
+        .attr("transform", "translate(" + margin.left 
+            + ", " + margin.top + ")")
+
+	var min = d3.min(data, function(d){ return d.valor;});
+	var max = d3.max(data,function(d){return d.valor;});
+	//se obtiene arreglo con los limites de los valores
+	var val_extent = d3.extent(data,function(d){return d.valor;});
+	//se obtiene arreglo del elemento seleccionado de los datos
+	var grade_map = data.map(function(d){return d.ciclo;});
+	
+	//escala de banda para eje horizontal (x)
+    var x = d3.scaleBand()
+        .domain(grade_map)
+        .range([0, width])
+        .paddingInner(0.3)
+        .paddingOuter(0.3);
+
+	//escala lineal para el eje vertical (y)
+    var y = d3.scaleLinear()
+        .domain([100, 0])
+        .range([0,height]);
+
+	//se define escala de colores
+	var color = d3.scaleOrdinal()
+		//.domain(grade_map)
+		.domain([0,100])
+		.range(["red","orange","yellow","green"]);
+	
+	var leftAxis = d3.axisLeft(y)
+		.ticks(10);
+	var bottomAxis = d3.axisBottom(x);
+	g.append("g")
+        .attr("class", "y-axis")
+        .call(leftAxis);
+
+	var xAxis = d3.axisBottom(x);
+    g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0, " + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+            .attr("y", "10")
+            .attr("x", "-5")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-40)");
+
+    var rects = g.selectAll("rect")
+        .data(data);
+    //se agregan los rectángulos para representar los datos
+    rects.enter()
+        .append("rect")
+            .attr("y", function(d){ return height - y(d.valor); })
+            .attr("x", function(d){ return x(d.ciclo); })
+            .attr("width", x.bandwidth)
+            .attr("height", function(d){ return d.valor; })
+            .attr("fill", function(d) { return color(d.valor); });
+
+</script>
+
 <svg id="chart" width="650" height="400"></svg>
 
 Select year: 
@@ -66,11 +188,15 @@ Toggle sort
 d3.csv('{% static "datos/data.csv" %}').then(d => chart(d))
 
 function chart(csv) {
-
+	console.log("csv: " + csv);
 	var keys = csv.columns.slice(2);
-
+	console.log("keys : " + keys);
+	
 	var year   = [...new Set(csv.map(d => d.Year))]
 	var states = [...new Set(csv.map(d => d.State))]
+
+	console.log("years : " + year);
+	console.log("states : " + states);
 
 	var options = d3.select("#year").selectAll("option")
 		.data(year)
