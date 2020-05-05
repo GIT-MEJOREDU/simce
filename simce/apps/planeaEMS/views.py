@@ -99,8 +99,8 @@ def nivel_logro(request, cct='01DCT0279R', turno_escolar=1, ciclo_escolar=19, ex
     # print("result")
     # print(result_logro)
     #json_logro = json.dumps(results_as_dict)
-    # print("result_as_dict")
-    # print(results_as_dict)
+    #print("result_as_dict")
+    #print(results_as_dict)
     # print("json")
     # print(json_logro)
     # parametro que se envía al html
