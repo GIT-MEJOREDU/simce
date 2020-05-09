@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block extralink %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"-->
 {% endblock extralink %}
 {% block titulo %}
 Nivel de Logro
@@ -20,6 +20,16 @@ Nivel de Logro
 
     .axis path {
         display: none;
+    }
+
+    .arc text {
+        font: 10px sans-serif;
+        text-anchor: middle;
+    }
+
+    .arc path {
+        stroke: rgb(252, 255, 255);
+        stroke-width: 2.5px;
     }
 </style>
 </style>
@@ -68,50 +78,55 @@ Nivel de Logro
     {% endfor %}
 </p-->
 <p>
-<table width="100" class="table table-striped table-bordered table-hover" id="dataTables-example">
-    <thead>
-        <tr>
-            <td>Nivel de Logro</td>
-        </tr>
-        <!--
+    <!--
+    Nivel de logro mostrado en tabla
+    -->
+    <table width="100" class="table table-striped table-bordered table-hover" id="dataTables-example">
+        <thead>
+            <tr>
+                <td>Nivel de Logro</td>
+            </tr>
+            <!--
             Se recorre solo el primer renglon y se muestra solo el indice
             con la variable forloop.first de la etiqueta for validamos si es el primer renglon 
             para mostrar en el header el titulo de la columna que en este caso corresponde con el indice
             del diccionario 
         -->
-        {% for renglon in consulta_logro %}
-        <tr>
-        {% if forloop.first %}  
-            {% for clave in renglon %}
-            <td>
-                {{ clave }}
-            </td>
+            {% for renglon in consulta_logro %}
+            <tr>
+                {% if forloop.first %}
+                {% for clave in renglon %}
+                <td>
+                    {{ clave }}
+                </td>
+                {% endfor %}
+                {% endif %}
+            </tr>
             {% endfor %}
-        {% endif %}
-        </tr>
-        {% endfor %}
 
-    </thead>
-    <tbody>
-        <!-- 
+        </thead>
+        <tbody>
+            <!-- 
             Aqui se recorre toda la lista, en la que un renglon le corresponde a un elemento diccionario de la lista 
             y se obtiene el par indice:valor para cada item del diccionario
             desplegandose solo el valor
         -->
-        {% for renglon in consulta_logro %}
-        <tr>
-            {% for clave, valor in renglon.items %}
-            <td>
-                {{ valor }}
-            </td>
+            {% for renglon in consulta_logro %}
+            <tr>
+                {% for clave, valor in renglon.items %}
+                <td>
+                    {{ valor }}
+                </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 </p>
 <br>
-
+<!--
+    Nivel de logro mostrado en grafica de barras apiladas
+-->
 <!-- Bootstrap grid setup -->
 <div class="container">
     <div class="row">
@@ -258,7 +273,7 @@ Nivel de Logro
             .enter().append("rect")
             .attr("x", function (d) { return x(d.data.Area_de_Dominio); })
             .attr("y", function (d) { return y(d[1]); })
-            .attr("height", function (d) {  return y(d[0]) - y(d[1]); })
+            .attr("height", function (d) { return y(d[0]) - y(d[1]); })
             .attr("width", x.bandwidth());
 
         g.append("g")
@@ -296,11 +311,11 @@ Nivel de Logro
             .attr("dy", ".35em")
             .attr("text-anchor", "end")
             .text(function (d) { return d; });
-        
-        d3.interval(function(){update(data)},1000);
+
+        //d3.interval(function () { update(data) }, 1000);
     };
 
-    function update(data){
+    function update(data) {
         console.log("desde UPDATE Function");
     }
 
@@ -323,7 +338,182 @@ Nivel de Logro
 
 </script>
 
+<!--
+    Nivel de logro mostrado en grafica de pie
+    https://d3-spanish.readthedocs.io/es/latest/ejemplos/graficos/pie_chart.html
+-->
+<!-- Bootstrap grid setup -->
+<div class="container">
+    <div class="row">
+        <!--svg id="chart-area" width="800" height="400"></svg-->
+        <svg id="pie_chart" width="660" height="500"></svg>
+    </div>
+    Seleccionar Dominio:
+    <select id="dominio"></select>
+</div>
+<script>
+    {% load static %}
+    d3.csv('{% static "work_files/result_logro.csv" %}').then(d => procesar_data(d))
 
+    function procesar_data(all_data) {
+        //data = [72.97, 21.62, 5.41, 0.00];  //datos de prueba
+        console.log("datos de archivo result_logro.csv: ", all_data);
+
+        //se obtienen las claves del diccionario a partir de la propiedad colums del objeto all_data
+        var keys = all_data.columns.slice(1);
+        console.log("keys : " + keys);
+
+        //se obtienen los valores posibles del dominio
+        var dominio = all_data.map(d => d["Area de Dominio"]);
+        console.log("Dominio: ", dominio);
+
+        //se agregan opciones al select
+        var options = d3.select("#dominio").selectAll("option")
+            .data(dominio)
+            .enter().append("option")
+            .text(d => d);
+        var data = all_data[0];
+        //console.log("datos renglon 0 ", data);
+
+        // se obtienen las claves a partir de un objeto diccionario
+        data_keys = Object.keys(data);
+        console.log("data keys: " + data_keys);
+        var data_values = []
+
+        // ... Se obtienen los valores del diccionario
+        for (var i = 1; i < data_keys.length; i++) {
+            data_values.push(parseFloat(data[data_keys[i]]));
+        }
+        //console.log("data values: ", data_values);
+        data = data_values;
+        console.log("data values: ", data);
+        //console.log("renglon 1: ", data);
+
+
+        var svg = d3.select("#pie_chart"),
+            margin = { top: 20, right: 40, bottom: 30, left: 20 },
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom,
+            radius = Math.min(width, height) / 2,
+            g = svg.append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        console.log("width: ", width, "height: ", height, "Radius: ", radius);
+
+        var color = d3.scaleOrdinal()
+            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
+
+        var labelArc = d3.arc()
+            .outerRadius(radius)
+            .innerRadius(radius - 50);
+
+        // Generate the pie
+        var pie = d3.pie()
+
+        //console.log("radio: ", radius)
+        var arc = d3.arc()
+            .outerRadius(radius - 10)
+            .innerRadius(0);
+        // Generate the arcs
+        var pieArc = d3.arc() // para generar el formato adecuado para la visualizacion
+            .innerRadius(width * 0.25) // radios
+            .outerRadius(width * 0.35);
+
+        var arcs = g.selectAll("arc");
+
+        var title_label = svg.append("g")
+            .attr("transform", "translate(" + (width / 2 - 120) + "," + 20 + ")")
+            .append("text")
+            .text(d3.select("#dominio").property("value"))
+            .attr("class", "title")
+
+        update(d3.select("#dominio").property("value"), 0)
+
+        //Actualiza Gráfico cuando se selecciona un nuevo Dominio (LyC o Mat)
+        function update(input, speed) {
+
+            data = all_data.filter(f => f["Area de Dominio"] == input)
+            console.log("Data Set Selected: ", data);
+
+            var sub_data;
+            data.forEach(function (d) {
+                //d.total = d3.sum(keys, k => +d[k]);
+                console.log("Data for each: ", d);
+                sub_data = d;
+            })
+            console.log("data: ", sub_data);
+            data = sub_data;
+            var result = Object.keys(data).map(function (key) {
+
+                // Using Number() to convert key to number type 
+                // Using obj[key] to retrieve key value 
+                return [Number(key), data[key]];
+            });
+            //console.log("Result key value pair: ", result);
+
+            // se obtienen solo los valores
+            var valores = [];
+            for (var i = 1; i < result.length; i++) {
+                for (var z = 1; z < result[i].length; z++) {
+                    //console.log("result dato: ",result[i][z]);
+                    valores.push(Number(result[i][z]));
+                }
+            }
+            //se reasignan datos 
+            data = valores;
+            console.log("valores: ", valores);
+
+            console.log("quitando etiquetas");
+            var text = arcs.selectAll("text")
+                .data(data, d => d.value);
+
+            //removiendo texto de la gráfica
+            text.exit().remove()
+
+            //se agregan nuevos datos
+            arcs = g.selectAll("arc")
+                .data(pie(data))
+                .enter()
+                .append("g")
+                .attr("class", "arc");
+
+            //se despliega gráfica con nuevos datos
+            arcs.append("path")
+                .attr("d", pieArc)
+                //.attr("d", arc)
+                .attr("stroke", "white")
+                .style("fill", function (d) {
+                    //console.log("d.data: ", d.data)
+                    return color(d.data);
+                });
+
+            //se muestran nuevas etiquetas
+            console.log("Agregando nuevas etiquetas")
+            arcs.append("text")
+                .attr("transform", function (d) { return "translate(" + labelArc.centroid(d) + ")"; })
+                .attr("dy", ".35em")
+                .text(function (d) {
+                    //console.log("d.value: ", d.value);
+                    return d.value;
+                });
+
+            //Modificando titulo a la gráfica
+            title_label.text(input);
+        }
+
+        var select = d3.select("#dominio")
+            .on("change", function () {
+                console.log("Dominio Selected: ", this.value)
+                update(this.value, 750)
+            })
+        //console.log("Dominio Selected: ", select);
+
+    }
+</script>
+
+<!--
+    Ejemplo de Gráfico de barras apiladas
+-->
 <svg id="chart" width="960" height="500"></svg>
 
 <script>

@@ -78,9 +78,17 @@ def nivel_logro(request, cct='01DCT0279R', turno_escolar=1, ciclo_escolar=19, ex
         cont1 = cont1 + 1
         cont2 = 0
 
+#se guarda consulta en archivo csv
+    #se agrega registro con header al arreglo
+    result_logro_csv = [["Area de Dominio","Nivel I Dominio Insuficiente","Nivel II Dominio Básico","Nivel III Dominio Satisfactorio","Nivel IV Dominio Sobresaliente"]]
+    #se agregan datos al arreglo
+    result_logro_csv.extend(result_logro)
+    #se llama a función para guardar los datos en archivo, como parámetros se pasa un nombre de archivo y la lista con los datos
+    save_data_as_csv_file("result_logro.csv",result_logro_csv)
+
   #  El arreglo de Arreglos [[],[],...] se convierte a un arrego con formato JSON [{},{},...]
     results_as_dict = []
-    # print(result_logro)
+    #print("logros: " , result_logro)
     for i in result_logro:
         result_as_dict = {
             "Area_de_Dominio": i[0],
@@ -90,7 +98,7 @@ def nivel_logro(request, cct='01DCT0279R', turno_escolar=1, ciclo_escolar=19, ex
             "Nivel_IV_Dominio_sobresaliente": i[4]
         }
         # print("results_as_dict")
-        # print(result_as_dict)
+        #print("resultados como diccionario" , result_as_dict)
         results_as_dict.append(result_as_dict)
 
     # print("results_as_dict")
@@ -203,3 +211,15 @@ def listarEntidades(request):
     entidadesfederativas = EntidadesFederativas.objects.using(
         'dimensionesPlaneaEms').all().iterator()
     return render(request, 'planeaEMS/entidades.html', {'entidadesfederativas': entidadesfederativas})
+
+def save_data_as_csv_file(file_name, result_logro):
+    import csv
+    print("Escribiendo en archivo csv:", result_logro)
+
+    ruta_archivos = "static/work_files/{}"
+    myFile = open(ruta_archivos.format(file_name), 'w')
+    with myFile:
+        writer = csv.writer(myFile)
+        writer.writerows(result_logro)
+    myFile.close
+    print("Escritura en archivo realizada")
