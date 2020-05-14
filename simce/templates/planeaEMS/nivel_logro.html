@@ -23,7 +23,7 @@ Nivel de Logro
     }
 
     .arc text {
-        font: 10px sans-serif;
+        font: 12px sans-serif;
         text-anchor: middle;
     }
 
@@ -416,7 +416,7 @@ Nivel de Logro
             .innerRadius(0);
         // Generate the arcs
         var pieArc = d3.arc() // para generar el formato adecuado para la visualizacion
-            .innerRadius(width * 0.25) // radios
+            .innerRadius(width * 0.25) // radius
             .outerRadius(width * 0.35);
 
         var arcs = g.selectAll("arc");
@@ -426,6 +426,7 @@ Nivel de Logro
             .append("text")
             .text(d3.select("#dominio").property("value"))
             .attr("class", "title")
+            .attr("font-size","22px")
 
         update(d3.select("#dominio").property("value"), 0)
 
@@ -435,14 +436,10 @@ Nivel de Logro
             data = all_data.filter(f => f["Area de Dominio"] == input)
             console.log("Data Set Selected: ", data);
 
-            var sub_data;
-            data.forEach(function (d) {
-                //d.total = d3.sum(keys, k => +d[k]);
-                console.log("Data for each: ", d);
-                sub_data = d;
-            })
-            console.log("data: ", sub_data);
-            data = sub_data;
+            //Los datos se sacan de la estructura de lista y quedan como diccionario
+            data = data[0];
+            console.log("data[0] ", data)
+            
             var result = Object.keys(data).map(function (key) {
 
                 // Using Number() to convert key to number type 
@@ -488,13 +485,15 @@ Nivel de Logro
                 });
 
             //se muestran nuevas etiquetas
-            console.log("Agregando nuevas etiquetas")
+            console.log("Agregando nuevas etiquetas", pie(data))
             arcs.append("text")
-                .attr("transform", function (d) { return "translate(" + labelArc.centroid(d) + ")"; })
-                .attr("dy", ".35em")
+                .attr("transform", function (d) { 
+                    console.log("laberlArc Centroid: ", labelArc.centroid(d))
+                    return "translate(" + labelArc.centroid(d) + ")"; })
+                .attr("dy", ".25em")
                 .text(function (d) {
                     //console.log("d.value: ", d.value);
-                    return d.value;
+                    return d.data;
                 });
 
             //Modificando titulo a la gráfica
@@ -507,22 +506,22 @@ Nivel de Logro
                 .enter().append("g")
                 .attr("class", "legend")
                 .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; })
-                .style("font", "10px sans-serif");
+                .style("font", "12px sans-serif");
 
-            //Se agregan rectámgulos a la leyenda
+            //Se agregan rectángulos a la leyenda
             legend.append("rect")
                 .attr("x", 70)
                 .attr("width", 18)
                 .attr("height", 18)
                 .attr("fill", color);
-            
+
             //Se agrega texto a la leyenda
             legend.append("text")
                 .attr("x", 50)
                 .attr("y", 9)
                 .attr("dy", ".35em")
                 .attr("text-anchor", "end")
-                .text(function (d,i) { return keys[i]; });
+                .text(function (d, i) { return keys[i]; });
 
         }
 

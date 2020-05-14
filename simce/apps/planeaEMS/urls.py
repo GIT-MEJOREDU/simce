@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import listarTurnosEscolares, listarCiclosEscolares, listarExtensionesEms, \
-    listarCentrosTrabajo, listarEntidades, datos_escuela, nivel_logro
+    listarCentrosTrabajo, listarEntidades, datos_escuela, nivel_logro, gapminder
 
 
 urlpatterns = [
@@ -11,5 +11,7 @@ urlpatterns = [
     path('listar_entidades/', listarEntidades, name='listar_entidades'),
     path('datos_escuela/',datos_escuela, name = 'datos_escuela'),
     path('nivel_logro/',nivel_logro, name = 'nivel_logro'),
+    #path('gapminder/',gapminder),
+    path('gapminder/',gapminder, name = 'gapminder'),
     
 ]
