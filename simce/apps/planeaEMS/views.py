@@ -184,7 +184,6 @@ def gapminder(request):
     return render(request, 'planeaEMS/gapminder.html')
 
 
-
 def listarTurnosEscolares(request):
     turnosescolares = Turnosescolares.objects.using(
         'dimensionesPlaneaEms').all().iterator()

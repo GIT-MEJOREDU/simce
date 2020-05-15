@@ -7,16 +7,17 @@
     {% block extralink %}
     {% endblock extralink %}
     <title>{% block titulo %}Django - SIMCE{% endblock titulo %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css' %}" />
-    {% load static %}
-    <link rel="stylesheet" href="{%static 'css/main.css' %}" /> 
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% load static %}{%static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% load static %}{%static 'css/main.css' %}" /> 
 
     {% block extracss %}
     {% endblock extracss %}
+    <!-- External JS libraries -->
     <!--script src="https://d3js.org/d3.v4.min.js"></script-->
-    {% load static %}
-    <script src='{% static "js/d3.v5.min.js" %}'></script>
+    <script src='{% load static %}{% static "js/jquery.min.js" %}'></script>
+    <script src='{% load static %}{% static "js/bootstrap.min.js" %}'></script>
+    <script src='{% load static %}{% static "js/d3.v5.min.js" %}'></script>
 </head>
 <body>
 

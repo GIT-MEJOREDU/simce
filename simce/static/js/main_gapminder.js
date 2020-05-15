@@ -3,8 +3,7 @@
 *    Mastering Data Visualization with D3.js
 *    Project 2 - Gapminder Clone
 */
-{% load static %}
-d3.json('{% static "datos/data_gapminder.json" %}').then(function(all_data){
+d3.json("../../static/datos/data_gapminder.json").then(function(all_data){
 	//console.log(all_data);
 
 	all_data.forEach(function(d){ d.year = +d.year; });
@@ -118,7 +117,7 @@ d3.json('{% static "datos/data_gapminder.json" %}').then(function(all_data){
 		.data(continents)
 		.enter().append("g")
 		.attr("class", "legend")
-        .attr("transform", function (d, i) { return "translate(" + (width - margin.right - 50) + "," + i * 20 + ")"; })
+        .attr("transform", function (d, i) { return "translate(" + (width - margin.right - 20) + "," + (height - (2*margin.bottom) - (i * 20)) + ")"; })
         .style("font", "18px sans-serif");
 
     //Se agregan rectángulos a la leyenda
