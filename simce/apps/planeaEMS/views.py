@@ -7,6 +7,13 @@ from .models import Turnosescolares, Ciclosescolares, Extensionesems, Centrostra
 
 # Create your views here.
 
+def Home(request):
+    return render(request, 'index.html')
+
+def gapminder(request):
+    return render(request, 'planeaEMS/gapminder.html')
+
+
 def nivel_logro(request, cct='01DCT0279R', turno_escolar=1, ciclo_escolar=19, extension_ems=0):
     # recibe información de la escuela a consultar
     from django.db import connection
@@ -174,14 +181,6 @@ def datos_escuela(request, cct='01DCT0279R', turno_escolar=1, ciclo_escolar=19, 
     contexto = {'consulta': result, 'consulta_lyc': result_lyc}
 
     return render(request, 'planeaEMS/datos_escuela.html', contexto)
-
-
-
-def Home(request):
-    return render(request, 'index.html')
-
-def gapminder(request):
-    return render(request, 'planeaEMS/gapminder.html')
 
 
 def listarTurnosEscolares(request):
