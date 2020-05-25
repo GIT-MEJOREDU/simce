@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+{% block extralink %}
+
+<!-- Custom styling -->
+<link rel="stylesheet" href='{% load static %}{% static "css/style.css" %}'>
+{% endblock extralink %}
+{% block titulo %}
+Población Escolar
+{% endblock titulo %}
+{% block extrascript %}
+{% endblock extrascript %}
+{% block body %}
+<nav class="navbar navbar-default">
+    <div class="container">
+        <a class="navbar-brand" href="#"><img id="logo" src='{% load static %}{% static "img/mejoredu400x400.jpg" %}'></a>
+    </div>
+</nav>
+
+<!-- Bootstrap grid setup -->
+<div class="container">
+    <div class="row">
+        <div id="chart-area" width="900" , height="600"></div>
+    </div>
+    <div class="row">
+        Ciclo Escolar:
+        <select id="ciclo"></select>
+    </div>
+    <div class="row">
+        Edad Escolar:
+        <select id="edad"></select>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block extrajs %}
+<!-- Custom JS -->
+<script src='{% load static %}{% static "js/main_poblacion.js" %}'></script>
+{% endblock extrajs %}

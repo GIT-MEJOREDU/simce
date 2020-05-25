@@ -13,6 +13,9 @@ def Home(request):
 def gapminder(request):
     return render(request, 'planeaEMS/gapminder.html')
 
+def poblacion(request):
+    return render(request, 'planeaEMS/poblacion.html')
+
 
 def nivel_logro(request, cct='01DCT0279R', turno_escolar=1, ciclo_escolar=19, extension_ems=0):
     # recibe información de la escuela a consultar

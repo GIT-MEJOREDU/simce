@@ -126,8 +126,6 @@ d3.json("../../static/datos/data_gapminder.json").then(function (all_data) {
 
 	var data = [];
 
-	var circles = g.selectAll("circle");
-
 	//Agregando grupo para leyenda
 	var legend = g.selectAll("legend")
 		.data(continents)
@@ -161,8 +159,6 @@ d3.json("../../static/datos/data_gapminder.json").then(function (all_data) {
 		.attr("font-size", "30px");
 
 	//console.log("all_data: ", all_data.length);
-	var cont = 0
-	d3.interval(function () { update() }, 100);
 
 	function update() {
 		//console.log("interval: ",cont);
@@ -175,7 +171,7 @@ d3.json("../../static/datos/data_gapminder.json").then(function (all_data) {
 
 		circles.exit().remove();
 
-		circles
+/*  		circles
 			.attr("fill", "green")
 			.attr("cx", function (d, i) {
 				if (d.income > 0 && d.life_exp > 0) { return xScaleLog(d.income) };
@@ -183,6 +179,12 @@ d3.json("../../static/datos/data_gapminder.json").then(function (all_data) {
 			.attr("cy", function (d, i) {
 				if (d.income > 0 && d.life_exp > 0) { return yScale(d.life_exp) };
 			})
+			.attr("fill", function (d) { return colorContinent(d.continent) })
+			.attr("r", function (d) { return circleRadio(areaScale(d.population)) });  */
+			circles
+			.attr("fill", "green")
+			.attr("cx", function (d, i) {return xScaleLog(d.income); })
+			.attr("cy", function (d, i) {return yScale(d.life_exp); })
 			.attr("fill", function (d) { return colorContinent(d.continent) })
 			.attr("r", function (d) { return circleRadio(areaScale(d.population)) });
 
@@ -206,6 +208,10 @@ d3.json("../../static/datos/data_gapminder.json").then(function (all_data) {
 		cont = cont + 1;
 		if (cont >= all_data.length) { cont = 0; }
 	}
+
+	var cont = 0
+	update();
+	d3.interval(function () { update() }, 200);
 
 	function descartar(item) {
 		//se filtran las ciudades que no tienen cifras en expectativa de vida y ingresos
